@@ -47,9 +47,10 @@ function App() {
 
   const deleteEmployees = async () => {
     try {
-      employees.forEach(async (e) => {
-        await axios.delete("http://localhost:3000/employees/" + e.id);
+      const promises = employees.map((employee) => {
+        return axios.delete("http://localhost:3000/employees/" + employee.id);
       });
+      await Promise.all([...promises]);
       getEmployees();
       console.log("test", employees);
     } catch (error) {
