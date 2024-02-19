@@ -20,10 +20,7 @@ function App() {
   const createEmployees = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/employees",
-        formData
-      );
+      await axios.post("http://localhost:3000/employees", formData);
       getEmployees();
     } catch (error) {
       console.log(error);
