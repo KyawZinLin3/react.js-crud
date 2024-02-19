@@ -10,7 +10,7 @@ function App() {
   const getEmployees = async () => {
     try {
       const resp = await axios.get("http://localhost:3000/employees");
-      console.log(resp.data);
+      console.log("resp", resp.data);
       setEmployees(resp.data);
     } catch (error) {
       console.log(error);
@@ -34,6 +34,27 @@ function App() {
     setFormData((data) => {
       return { ...data, [key]: value };
     });
+  };
+
+  const deleteEmployeeById = async (id) => {
+    try {
+      await axios.delete("http://localhost:3000/employees/" + id);
+      getEmployees();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteEmployees = async () => {
+    try {
+      employees.forEach(async (e) => {
+        await axios.delete("http://localhost:3000/employees/" + e.id);
+      });
+      getEmployees();
+      console.log("test", employees);
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     getEmployees();
@@ -65,17 +86,37 @@ function App() {
             <th>Salary</th>
           </tr>
         </thead>
-        {employees.map((employee) => {
-          return (
-            <tbody key={employee.id}>
-              <tr>
-                <td>{employee.name}</td>
-                <td>{employee.salary}</td>
-              </tr>
-            </tbody>
-          );
-        })}
+        {employees.length > 0 ? (
+          employees.map((employee) => {
+            const { id, name, salary } = employee;
+            return (
+              <tbody key={id}>
+                <tr>
+                  <td>{name}</td>
+                  <td>{salary}</td>
+                  <td>
+                    <button
+                      type="button"
+                      onClick={() => deleteEmployeeById(id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            );
+          })
+        ) : (
+          <tbody>
+            <tr>
+              <h4>No data Here</h4>
+            </tr>
+          </tbody>
+        )}
       </table>
+      <button type="button" onClick={() => deleteEmployees()}>
+        Delete All
+      </button>
     </>
   );
 }
